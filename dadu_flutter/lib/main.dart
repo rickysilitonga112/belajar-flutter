@@ -33,6 +33,13 @@ class DicePage extends StatefulWidget {
 class _DicePageState extends State<DicePage> {
   int left_dice_number = 1;
   int right_dice_number = 3;
+
+  // fungsi untuk mengubah nilai dice random
+  void randomDice() {
+    left_dice_number = Random().nextInt(6) + 1;
+    right_dice_number = Random().nextInt(6) + 1;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -47,13 +54,7 @@ class _DicePageState extends State<DicePage> {
               onPressed: () {
                 setState(
                   () {
-                    random(min, max) {
-                      var rn = new Random();
-                      return min + rn.nextInt(max - min);
-                    }
-
-                    left_dice_number = random(1, 6);
-                    print('Left dice number = $left_dice_number');
+                    randomDice();
                   },
                 );
               },
@@ -66,13 +67,7 @@ class _DicePageState extends State<DicePage> {
               onPressed: () {
                 setState(
                   () {
-                    random(min, max) {
-                      var rn = new Random();
-                      return min + rn.nextInt(max - min);
-                    }
-
-                    right_dice_number = random(1, 6);
-                    print('Left dice number = $right_dice_number');
+                    randomDice();
                   },
                 );
               },
