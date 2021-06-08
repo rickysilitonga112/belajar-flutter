@@ -1,0 +1,18 @@
+void main(){
+  Human ricky = Human(startingHeight: 160.0);
+  ricky.grow(20);
+
+}
+
+class Human(){
+  int age = 0;
+  double height;
+
+  Human({double startingHeight}){
+    height = startingHeight;
+  }
+
+  void grow(int numberOfYears){
+    age = age + numberOfYears;
+  }
+}

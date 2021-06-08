@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:rflutter_alert/rflutter_alert.dart'; // flutter alert
+import 'QuizzBrain.dart';
 
 void main() => runApp(MyApp());
 
@@ -20,6 +22,8 @@ class MyApp extends StatelessWidget {
   }
 }
 
+QuizzBrain quizzBrain = QuizzBrain();
+
 class QuizzPage extends StatefulWidget {
   @override
   _QuizzPageState createState() => _QuizzPageState();
@@ -27,22 +31,46 @@ class QuizzPage extends StatefulWidget {
 
 class _QuizzPageState extends State<QuizzPage> {
   List<Icon> scoreKeeper = [];
-  List<String> questions = [
-    'Microsoft didirikan oleh Bill Gates',
-    'Python adalah bahasa pemrograman Compiled',
-    'Pyton adalah bahasa pemrograman yang baik digunakan dalam Machine Learning',
-    'Bahasa pemrograman C++ mensupport paradigma Object Oriented Programming',
-    'Javasript adalah bahasa pemrograman static'
-  ];
-  List<bool> answer = [
-    true,
-    false,
-    true,
-    true,
-    false,
-  ];
+  int trueAns = 0;
+  void checkAnswer(bool userAnswer) {
+    bool trueAnswer = quizzBrain.getQuizzAnswer();
+    if (quizzBrain.next() == true) {
+      setState(() {
+        if (trueAnswer == userAnswer) {
+          trueAns++;
+          scoreKeeper.add(
+            Icon(
+              Icons.check,
+              color: Colors.green,
+            ),
+          );
+        } else {
+          scoreKeeper.add(
+            Icon(
+              Icons.close,
+              color: Colors.red,
+            ),
+          );
+        }
+        print(trueAns);
+        quizzBrain.nextQuestion();
+      });
+    } else {
+      Alert(
+              context: context,
+              title: "Kuis Selesai",
+              desc: "Anda menjawab $trueAns pertanyaan dengan benar")
+          .show();
 
-  int questionIndex = 0;
+      setState(() {
+        if (quizzBrain.finish() == true) {
+          quizzBrain.resetQuestionIndex();
+          scoreKeeper.clear();
+          quizzBrain.setNext();
+        }
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +84,7 @@ class _QuizzPageState extends State<QuizzPage> {
             padding: EdgeInsets.all(10.0),
             child: Center(
               child: Text(
-                questions[questionIndex],
+                quizzBrain.getQuizzQuestion(),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 25.0,
@@ -79,20 +107,7 @@ class _QuizzPageState extends State<QuizzPage> {
                 style: TextStyle(color: Colors.white, fontSize: 20.0),
               ),
               onPressed: () {
-                bool trueAnswer = answer[questionIndex];
-                if (trueAnswer == true) {
-                  print('Anda benar');
-                } else {
-                  print('Anda salah');
-                }
-
-                setState(() {
-                  if (questionIndex == questions.length - 1) {
-                    questionIndex = questions.length;
-                  } else {
-                    questionIndex++;
-                  }
-                });
+                checkAnswer(true);
               },
             ),
           ),
@@ -113,20 +128,7 @@ class _QuizzPageState extends State<QuizzPage> {
                 ),
               ),
               onPressed: () {
-                bool trueAnswer = answer[questionIndex];
-                if (trueAnswer == false) {
-                  print('Anda benar');
-                } else {
-                  print('Anda salah');
-                }
-                setState(() {
-                  if (questionIndex == questions.length - 1) {
-                    questionIndex = questions.length - 1;
-                    print(questionIndex);
-                  } else {
-                    questionIndex++;
-                  }
-                });
+                checkAnswer(false);
               },
             ),
           ),
